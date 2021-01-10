@@ -31,9 +31,6 @@ async function play() {
     // Increment the playerID value to retrieve our ID
     let id = await incrbyAsync(redisKeys.playerID, 1);
 
-    // Initialize our average
-    await hsetAsync(id, redisKeys.average, 0);
-
     let numSamples, sum;
     while (true) {
         // Increment sample count
@@ -41,9 +38,6 @@ async function play() {
 
         // Choose a random number and add it to sum
         sum = await hincrbyAsync(id, redisKeys.sum, chooseNumber());
-
-        // Store our new average
-        await hsetAsync(id, redisKeys.average, sum / numSamples);
 
         // Update the scoreboard with our average
         await zadd(redisKeys.scoreboard, sum / numSamples, id);
